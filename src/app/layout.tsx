@@ -1,8 +1,26 @@
 import type { Metadata } from "next";
+import { Cormorant_Garamond, Mulish } from "next/font/google";
 import "./globals.css";
 import { NavBar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { isLiveVerification } from "@/lib/env";
+
+// Self-hosted, optimized fonts (no layout shift, no runtime request to Google).
+// These expose CSS variables that globals.css wires into --serif and --sans.
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+  variable: "--font-serif",
+});
+
+const mulish = Mulish({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
   title: "RishtaScore, find your life partner with proof",
@@ -12,15 +30,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Mulish:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en" className={`${cormorant.variable} ${mulish.variable}`}>
       <body>
         {!isLiveVerification && (
           <div className="demo-banner">

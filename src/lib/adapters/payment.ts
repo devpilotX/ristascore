@@ -14,7 +14,7 @@
  * fake "paid" state, so nothing ever pretends money changed hands.
  */
 
-import { createHmac } from "node:crypto";
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { env } from "../env";
 import { logger } from "../logger";
 
@@ -70,7 +70,12 @@ class RazorpayProvider implements PaymentProvider {
   verifyWebhookSignature(rawBody: string, signature: string): boolean {
     if (!env.razorpay.webhookSecret) return false;
     const expected = createHmac("sha256", env.razorpay.webhookSecret).update(rawBody).digest("hex");
-    return expected === signature;
+    // Constant-time comparison to avoid leaking the signature via timing.
+    // timingSafeEqual requires equal-length buffers, so guard on length first.
+    const expectedBuf = Buffer.from(expected, "utf8");
+    const signatureBuf = Buffer.from(signature, "utf8");
+    if (expectedBuf.length !== signatureBuf.length) return false;
+    return timingSafeEqual(expectedBuf, signatureBuf);
   }
 }
 

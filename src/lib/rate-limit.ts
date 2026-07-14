@@ -10,6 +10,19 @@ type Bucket = { count: number; resetAt: number };
 
 const buckets = new Map<string, Bucket>();
 
+// Above this many tracked keys we sweep out expired buckets on the next call.
+// This bounds memory for the in-memory limiter without relying on a timer
+// (timers are unreliable in serverless). Swap for Redis for multi-instance use.
+const SWEEP_THRESHOLD = 5_000;
+
+/** Drop expired buckets once the map grows past the threshold. */
+function sweepExpired(now: number): void {
+  if (buckets.size < SWEEP_THRESHOLD) return;
+  for (const [key, bucket] of buckets) {
+    if (bucket.resetAt <= now) buckets.delete(key);
+  }
+}
+
 export interface RateLimitResult {
   ok: boolean;
   remaining: number;
@@ -23,6 +36,7 @@ export interface RateLimitResult {
  */
 export function rateLimit(key: string, limit: number, windowMs: number): RateLimitResult {
   const now = Date.now();
+  sweepExpired(now);
   const existing = buckets.get(key);
 
   if (!existing || existing.resetAt <= now) {
