@@ -1,0 +1,395 @@
+// RishtaScore data model.
+// Privacy by design: we never store raw government ID numbers, only a masked
+// last 4 reference inside provider_response JSON. Consent is required before
+// any check runs, and revoking consent immediately deactivates linked badges.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  subject
+  admin
+  api_client
+}
+
+enum CheckType {
+  government_id
+  employment_income
+  education
+  marital_status
+  criminal_record
+}
+
+enum CheckStatus {
+  verified
+  mismatch
+  unverifiable
+  pending
+}
+
+enum VerificationStatus {
+  pending
+  running
+  completed
+  failed
+}
+
+enum DisputeStatus {
+  open
+  under_review
+  resolved
+  rejected
+}
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  hashed_password String
+  full_name       String
+  phone           String?
+  role            UserRole  @default(subject)
+  is_active       Boolean   @default(true)
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  consents        Consent[]
+  verifications   VerificationRequest[]
+  api_keys        ApiKey[]
+  disputes        Dispute[]
+
+  // Matrimony
+  profile             Profile?
+  sent_interests      Interest[]     @relation("InterestSender")
+  received_interests  Interest[]     @relation("InterestReceiver")
+  shortlists          Shortlist[]    @relation("ShortlistOwner")
+  shortlisted_by      Shortlist[]    @relation("ShortlistTarget")
+  conversations_a     Conversation[] @relation("ConvUserA")
+  conversations_b     Conversation[] @relation("ConvUserB")
+  messages            Message[]      @relation("MessageSender")
+  profile_views_made  ProfileView[]  @relation("Viewer")
+  profile_views_got   ProfileView[]  @relation("Viewed")
+}
+
+model Consent {
+  id                String    @id @default(cuid())
+  user_id           String
+  authorized_checks CheckType[]
+  consent_text      String
+  ip_address        String?
+  user_agent        String?
+  consented_at      DateTime  @default(now())
+  is_active         Boolean   @default(true)
+  revoked_at        DateTime?
+
+  user          User                  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  verifications VerificationRequest[]
+
+  @@index([user_id])
+}
+
+model VerificationRequest {
+  id           String             @id @default(cuid())
+  subject_id   String
+  consent_id   String
+  status       VerificationStatus @default(pending)
+  claimed_data Json
+  verification_mode String        @default("sandbox")
+  created_at   DateTime           @default(now())
+  completed_at DateTime?
+
+  subject       User          @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  consent       Consent       @relation(fields: [consent_id], references: [id], onDelete: Cascade)
+  check_results CheckResult[]
+  trust_score   TrustScore?
+  badge         TrustBadge?
+
+  @@index([subject_id])
+  @@index([consent_id])
+}
+
+model CheckResult {
+  id                 String      @id @default(cuid())
+  request_id         String
+  check_type         CheckType
+  status             CheckStatus @default(pending)
+  provider_name      String
+  provider_response  Json
+  summary            String
+  score_contribution Int         @default(0)
+  checked_at         DateTime    @default(now())
+
+  request   VerificationRequest @relation(fields: [request_id], references: [id], onDelete: Cascade)
+  disputes  Dispute[]
+
+  @@index([request_id])
+}
+
+model TrustScore {
+  id          String   @id @default(cuid())
+  request_id  String   @unique
+  total_score Int
+  max_score   Int      @default(900)
+  grade       String
+  breakdown   Json
+  coverage    Json
+  computed_at DateTime @default(now())
+
+  request VerificationRequest @relation(fields: [request_id], references: [id], onDelete: Cascade)
+}
+
+model TrustBadge {
+  id             String    @id @default(cuid())
+  request_id     String    @unique
+  token          String    @unique
+  is_active      Boolean   @default(true)
+  visible_fields CheckType[]
+  issued_at      DateTime  @default(now())
+  expires_at     DateTime
+
+  request    VerificationRequest @relation(fields: [request_id], references: [id], onDelete: Cascade)
+  audit_logs BadgeAuditLog[]
+
+  @@index([token])
+}
+
+model BadgeAuditLog {
+  id                String   @id @default(cuid())
+  badge_id          String
+  viewer_ip         String?
+  viewer_user_agent String?
+  api_key_id        String?
+  viewed_at         DateTime @default(now())
+
+  badge TrustBadge @relation(fields: [badge_id], references: [id], onDelete: Cascade)
+
+  @@index([badge_id])
+}
+
+model ApiKey {
+  id         String   @id @default(cuid())
+  owner_id   String
+  key_hash   String   @unique
+  label      String
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now())
+
+  owner User @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+
+  @@index([owner_id])
+}
+
+model Dispute {
+  id              String        @id @default(cuid())
+  subject_id      String
+  check_result_id String
+  status          DisputeStatus @default(open)
+  reason          String
+  resolution      String?
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+
+  subject      User        @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  check_result CheckResult @relation(fields: [check_result_id], references: [id], onDelete: Cascade)
+
+  @@index([subject_id])
+  @@index([check_result_id])
+}
+
+
+// ---------------------------------------------------------------------------
+// Matrimony domain
+// ---------------------------------------------------------------------------
+
+enum Gender {
+  male
+  female
+}
+
+enum MaritalState {
+  never_married
+  divorced
+  widowed
+  awaiting_divorce
+}
+
+enum Diet {
+  vegetarian
+  non_vegetarian
+  eggetarian
+  vegan
+  jain
+}
+
+enum Habit {
+  no
+  occasionally
+  yes
+}
+
+enum InterestStatus {
+  sent
+  accepted
+  declined
+  withdrawn
+}
+
+/// A user's matrimony profile. One per user. Designed for filtered search at
+/// scale: the columns most used as filters are individually indexed, plus a
+/// composite index for the default discovery listing.
+model Profile {
+  id            String        @id @default(cuid())
+  user_id       String        @unique
+  // Basics
+  gender        Gender
+  date_of_birth DateTime
+  height_cm     Int?
+  marital_state MaritalState  @default(never_married)
+  // Community
+  religion      String?
+  community     String?
+  mother_tongue String?
+  // Location
+  country       String?       @default("India")
+  state         String?
+  city          String?
+  // Education and career
+  education     String?
+  education_field String?
+  profession    String?
+  employer      String?
+  annual_income Int?          // INR per year, used for range filters
+  // Lifestyle
+  diet          Diet?
+  smoking       Habit?
+  drinking      Habit?
+  // About
+  headline      String?
+  about         String?       @db.Text
+  family_details String?      @db.Text
+  // Partner preferences
+  pref_gender         Gender?
+  pref_age_min        Int?
+  pref_age_max        Int?
+  pref_height_min_cm  Int?
+  pref_height_max_cm  Int?
+  pref_religion       String?
+  pref_community      String?
+  pref_marital_state  String?
+  pref_diet           String?
+  pref_location       String?
+  pref_education      String?
+  pref_notes          String?  @db.Text
+  // Meta
+  is_published  Boolean       @default(false)
+  completeness  Int           @default(0)
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
+
+  user   User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  photos ProfilePhoto[]
+
+  @@index([is_published, gender])
+  @@index([religion])
+  @@index([community])
+  @@index([city])
+  @@index([state])
+  @@index([marital_state])
+  @@index([annual_income])
+  @@index([date_of_birth])
+}
+
+model ProfilePhoto {
+  id         String   @id @default(cuid())
+  profile_id String
+  url        String
+  is_primary Boolean  @default(false)
+  sort_order Int      @default(0)
+  created_at DateTime @default(now())
+
+  profile Profile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+
+  @@index([profile_id])
+}
+
+/// Expressing interest in another user. Unique per ordered pair.
+model Interest {
+  id           String         @id @default(cuid())
+  from_user_id String
+  to_user_id   String
+  status       InterestStatus @default(sent)
+  message      String?
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+
+  from_user User @relation("InterestSender", fields: [from_user_id], references: [id], onDelete: Cascade)
+  to_user   User @relation("InterestReceiver", fields: [to_user_id], references: [id], onDelete: Cascade)
+
+  @@unique([from_user_id, to_user_id])
+  @@index([to_user_id, status])
+  @@index([from_user_id, status])
+}
+
+/// A saved/shortlisted profile.
+model Shortlist {
+  id         String   @id @default(cuid())
+  owner_id   String
+  target_id  String
+  created_at DateTime @default(now())
+
+  owner  User @relation("ShortlistOwner", fields: [owner_id], references: [id], onDelete: Cascade)
+  target User @relation("ShortlistTarget", fields: [target_id], references: [id], onDelete: Cascade)
+
+  @@unique([owner_id, target_id])
+  @@index([owner_id])
+}
+
+/// A 1:1 conversation, created when an interest is accepted. user_a_id is
+/// always the lexicographically smaller id so the pair is unique.
+model Conversation {
+  id         String   @id @default(cuid())
+  user_a_id  String
+  user_b_id  String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user_a   User      @relation("ConvUserA", fields: [user_a_id], references: [id], onDelete: Cascade)
+  user_b   User      @relation("ConvUserB", fields: [user_b_id], references: [id], onDelete: Cascade)
+  messages Message[]
+
+  @@unique([user_a_id, user_b_id])
+  @@index([user_a_id])
+  @@index([user_b_id])
+}
+
+model Message {
+  id              String    @id @default(cuid())
+  conversation_id String
+  sender_id       String
+  body            String    @db.Text
+  read_at         DateTime?
+  created_at      DateTime  @default(now())
+
+  conversation Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
+  sender       User         @relation("MessageSender", fields: [sender_id], references: [id], onDelete: Cascade)
+
+  @@index([conversation_id, created_at])
+}
+
+/// Lightweight "who viewed me" analytics.
+model ProfileView {
+  id        String   @id @default(cuid())
+  viewer_id String
+  viewed_id String
+  viewed_at DateTime @default(now())
+
+  viewer User @relation("Viewer", fields: [viewer_id], references: [id], onDelete: Cascade)
+  viewed User @relation("Viewed", fields: [viewed_id], references: [id], onDelete: Cascade)
+
+  @@index([viewed_id, viewed_at])
+}

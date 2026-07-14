@@ -1,0 +1,66 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: rishta
+      POSTGRES_PASSWORD: rishta
+      POSTGRES_DB: rishtascore
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rishta -d rishtascore"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://rishta:rishta@db:5432/rishtascore?schema=public"
+      PUBLIC_BASE_URL: "http://localhost:3000"
+      NEXTAUTH_SECRET: "${NEXTAUTH_SECRET:-please-change-this-to-a-long-random-value-32chars-min}"
+      AUTH_TRUST_HOST: "true"
+      COOKIE_SECURE: "false"
+      REDIS_URL: "redis://redis:6379"
+      ADMIN_EMAIL: "${ADMIN_EMAIL:-admin@rishtascore.local}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD:-Admin@12345}"
+      NODE_ENV: "production"
+    ports:
+      - "3000:3000"
+
+  worker:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://rishta:rishta@db:5432/rishtascore?schema=public"
+      REDIS_URL: "redis://redis:6379"
+      NODE_ENV: "production"
+    entrypoint: ["npm", "run", "worker"]
+
+volumes:
+  db_data:

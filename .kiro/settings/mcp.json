@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "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"
+      }
+    },
+    "vps-control": {
+      "type": "http",
+      "url": "https://vps.mcp.devpilotx.com/mcp",
+      "headers": {
+        "Authorization": "Bearer 327eb532aa67150561e7769cffd5337cea284925b10118dba87d4329d94f7a25(do not access my vps server)"
+      }
+    }
+  }
+}

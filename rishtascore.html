@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8' />
+<meta name='viewport' content='width=device-width, initial-scale=1.0' />
+<title>RishtaScore, find your life partner with proof</title>
+<link rel='preconnect' href='https://fonts.googleapis.com'>
+<link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+<link href='https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Mulish:wght@400;500;600;700;800&display=swap' rel='stylesheet'>
+<style>
+:root{
+  --cream:#FBF5EC;--cream-2:#F4E9D8;--ivory:#FFFDF9;--surface:#FFFFFF;
+  --maroon:#7C1F39;--maroon-dark:#581127;--maroon-soft:#9A3A54;
+  --gold:#C2A14D;--gold-dark:#A6852F;--gold-soft:#E7D7AE;
+  --ink:#3B2A2E;--muted:#8C7A72;--line:#ECDFCD;
+  --green:#2E7D5B;--amber:#C0861B;--red:#B23A48;--gray:#9b8e86;
+  --radius:18px;--shadow:0 18px 48px rgba(88,17,39,.12);--shadow-sm:0 8px 22px rgba(88,17,39,.08);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Mulish',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;scroll-behavior:smooth}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);min-height:100vh;display:flex;flex-direction:column;line-height:1.62}
+a{color:var(--maroon);text-decoration:none;cursor:pointer}
+.muted{color:var(--muted)}
+.serif{font-family:var(--serif)}
+h1,h2,h3{font-family:var(--serif);font-weight:700;letter-spacing:.005em;color:var(--maroon-dark);line-height:1.1;margin:0}
+section[id]{scroll-margin-top:80px}
+.nav{position:sticky;top:0;z-index:30;background:rgba(251,245,236,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:1140px;margin:0 auto;padding:13px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:700;font-size:23px;color:var(--maroon-dark)}
+.brand svg{width:40px;height:40px;flex:none}
+.nav-links{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.nav-links a{color:var(--ink);font-weight:600;font-size:14.5px;opacity:.82}
+.nav-links a:hover,.nav-links a.active{opacity:1;color:var(--maroon)}
+.nav-links a.btn{color:#fff;opacity:1}
+main{flex:1;width:100%}
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,var(--maroon),var(--maroon-dark));color:#fff;border:none;border-radius:999px;padding:13px 26px;font-weight:700;font-size:15px;font-family:var(--sans);cursor:pointer;transition:transform .06s ease,box-shadow .2s;box-shadow:0 10px 22px rgba(124,31,57,.24)}
+.btn:hover{box-shadow:0 12px 28px rgba(124,31,57,.34);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn-sm{padding:9px 18px;font-size:14px}
+.btn-gold{background:linear-gradient(135deg,#D8B65E,var(--gold-dark));color:#3a2c08;box-shadow:0 10px 22px rgba(166,133,47,.3)}
+.btn-ghost{background:transparent;border:1.6px solid var(--gold);color:var(--maroon-dark);box-shadow:none}
+.btn-ghost-light{background:transparent;border:1.6px solid var(--gold-soft);color:#fff;box-shadow:none}
+.btn-danger{background:transparent;border:1.6px solid var(--red);color:var(--red);box-shadow:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-sm);transition:transform .18s ease,box-shadow .18s ease}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.card-cream{background:linear-gradient(180deg,var(--ivory),var(--cream-2))}
+.grid{display:grid;gap:22px}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.flourish{display:flex;align-items:center;justify-content:center;gap:16px}
+.flourish::before,.flourish::after{content:'';height:1px;width:64px}
+.flourish::before{background:linear-gradient(90deg,transparent,var(--gold))}
+.flourish::after{background:linear-gradient(90deg,var(--gold),transparent)}
+.eyebrow{font-family:var(--sans);font-weight:800;letter-spacing:.2em;text-transform:uppercase;font-size:11.5px;color:var(--gold-dark)}
+.hero{position:relative;overflow:hidden}
+.mandala{position:absolute;pointer-events:none;opacity:.06;z-index:0}
+.mandala svg{width:100%;height:auto;display:block}
+.mandala.m1{top:-70px;right:-70px;width:300px}
+.mandala.m2{bottom:-90px;left:-80px;width:340px}
+.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:46px;align-items:center;padding:56px 0 44px}
+.hero h1{font-size:58px;margin:14px 0 18px}
+.hero h1 .accent{color:var(--maroon);font-style:italic}
+.hero p.lead{font-size:18.5px;color:#5d4a44;margin:0 0 26px;max-width:520px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.trustbar{display:flex;gap:30px;flex-wrap:wrap;margin-top:30px;padding-top:24px;border-top:1px solid var(--line)}
+.trustbar .t b{font-family:var(--serif);font-size:28px;color:var(--maroon);display:block;line-height:1}
+.trustbar .t span{font-size:12.5px;color:var(--muted);font-weight:600}
+.hero-art{position:relative;display:grid;place-items:center}
+.hero-card{position:relative;background:linear-gradient(180deg,var(--ivory),#fff);border-radius:26px;padding:32px;box-shadow:var(--shadow);text-align:center;max-width:360px;border:1px solid var(--gold-soft)}
+.hero-card::after{content:'';position:absolute;inset:9px;border:1px solid var(--gold-soft);border-radius:18px;pointer-events:none}
+.pills{display:flex;gap:9px;flex-wrap:wrap}
+.pill{font-size:12px;font-weight:700;padding:6px 13px;border-radius:999px;background:#fff;color:var(--maroon);border:1px solid var(--gold-soft)}
+.valuestrip{background:var(--maroon-dark);color:#fff}
+.valuestrip .vrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;padding:22px 0}
+.valuestrip .vitem{display:flex;align-items:center;gap:13px;justify-content:center}
+.valuestrip .vic{width:44px;height:44px;border-radius:12px;background:rgba(231,215,174,.14);display:grid;place-items:center;flex:none}
+.valuestrip .vic svg{width:24px;height:24px}
+.valuestrip b{font-family:var(--serif);font-size:19px;color:#fff;display:block;line-height:1.1}
+.valuestrip span{font-size:12.5px;color:var(--gold-soft)}
+section.block{padding:54px 0}
+.sec-head{text-align:center;margin-bottom:32px}
+.sec-head .flourish{margin-bottom:12px}
+.sec-head .eyebrow{display:block;margin-bottom:8px}
+.sec-head h2{font-size:39px}
+.sec-head p{color:var(--muted);max-width:600px;margin:10px auto 0}
+.stepnum{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:23px;color:var(--gold);background:var(--maroon-dark);margin-bottom:14px;border:2px solid var(--gold)}
+.check-card{display:flex;flex-direction:column;gap:6px}
+.check-ic{width:56px;height:56px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(160deg,var(--ivory),var(--cream-2));border:1px solid var(--line);margin-bottom:10px}
+.check-ic svg{width:28px;height:28px}
+.use-ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:var(--cream-2);margin-bottom:4px}
+.use-ic svg{width:26px;height:26px}
+.gradebar{display:flex;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow-sm)}
+.gradebar .seg{flex:1;padding:18px 8px;text-align:center;color:#fff}
+.gradebar .seg b{font-family:var(--serif);font-size:26px;display:block;line-height:1}
+.gradebar .seg span{font-size:11.5px;opacity:.95;font-weight:600}
+.cmp{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.cmp th,.cmp td{padding:15px 14px;text-align:center;border-bottom:1px solid var(--line);font-size:14.5px}
+.cmp th:first-child,.cmp td:first-child{text-align:left;font-weight:700;color:var(--maroon-dark)}
+.cmp thead th{background:var(--cream-2);font-family:var(--serif);font-size:19px;color:var(--maroon-dark)}
+.cmp .vt{background:rgba(194,161,77,.1)}
+.cmp thead th.vt{background:rgba(194,161,77,.22)}
+.cmp svg{width:22px;height:22px;vertical-align:middle}
+.cmp tr:last-child td{border-bottom:none}
+.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:24px;align-items:stretch}
+.price-card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:30px 28px;display:flex;flex-direction:column;box-shadow:var(--shadow-sm);transition:transform .18s ease,box-shadow .18s ease}
+.price-card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.price-card.pop{border:2px solid var(--gold);box-shadow:var(--shadow)}
+.price-card .ribbon{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#D8B65E,var(--gold-dark));color:#3a2c08;font-weight:800;font-size:11px;letter-spacing:.08em;padding:6px 16px;border-radius:999px;text-transform:uppercase;white-space:nowrap}
+.price-card h3{font-size:25px}
+.price-amt{font-family:var(--serif);font-size:46px;color:var(--maroon-dark);margin:8px 0 0;line-height:1}
+.price-amt small{font-size:15px;color:var(--muted);font-family:var(--sans);font-weight:600}
+.price-note{font-size:12.5px;color:var(--muted);margin:4px 0 0}
+.price-card ul{list-style:none;padding:0;margin:18px 0 24px;display:flex;flex-direction:column;gap:12px}
+.price-card li{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;color:#5d4a44}
+.price-card li svg{width:20px;height:20px;flex:none;margin-top:2px}
+.price-card .btn{margin-top:auto;width:100%}
+.trust-strip{background:linear-gradient(135deg,var(--ivory),var(--cream-2));border:1px solid var(--gold-soft);border-radius:20px;padding:32px;display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.trust-strip .ic{width:66px;height:66px;border-radius:16px;background:#fff;display:grid;place-items:center;border:1px solid var(--line);flex:none}
+.trust-strip .ic svg{width:36px;height:36px}
+.trust-strip .tx{flex:1;min-width:260px}
+.faq details{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:2px 20px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
+.faq summary{cursor:pointer;list-style:none;padding:16px 0;font-weight:700;color:var(--maroon-dark);font-size:16.5px;display:flex;justify-content:space-between;align-items:center;gap:14px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:'+';font-size:24px;color:var(--gold-dark);font-weight:400;line-height:1}
+.faq details[open] summary::after{content:'\2212'}
+.faq details p{margin:0 0 18px;color:#5d4a44;font-size:14.5px}
+label{display:block;font-size:13px;font-weight:700;color:var(--maroon-dark);margin:14px 0 6px}
+input,select,textarea{width:100%;background:var(--ivory);border:1.6px solid var(--line);color:var(--ink);border-radius:12px;padding:12px 13px;font-size:15px;font-family:var(--sans);outline:none}
+input:focus,select:focus{border-color:var(--gold)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:11px}
+.check-opt{display:flex;align-items:center;gap:11px;background:var(--ivory);border:1.6px solid var(--line);border-radius:12px;padding:12px 13px;font-size:14.5px;font-weight:600;cursor:pointer}
+.check-opt:hover{border-color:var(--gold-soft)}
+.check-opt input{width:auto}
+.check-opt svg{width:22px;height:22px;flex:none}
+.agree{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:14px;color:#5d4a44}
+.agree input{width:auto;margin-top:4px}
+.steps{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.step{flex:1;min-width:170px;padding:14px 16px;border-radius:14px;border:1.6px solid var(--line);background:var(--surface);font-size:14px;color:var(--muted)}
+.step.active{border-color:var(--gold);background:var(--ivory);color:var(--ink)}
+.step b{display:block;color:var(--maroon-dark);font-family:var(--serif);font-size:17px}
+table.data{width:100%;border-collapse:collapse;margin-top:6px;font-size:14.5px}
+table.data th,table.data td{text-align:left;padding:12px 12px;border-bottom:1px solid var(--line)}
+table.data th{color:var(--muted);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em}
+.badge-status{font-weight:700;font-size:12px;padding:4px 11px;border-radius:999px;display:inline-block}
+.s-verified{background:rgba(46,125,91,.12);color:var(--green);border:1px solid rgba(46,125,91,.3)}
+.s-mismatch{background:rgba(178,58,72,.12);color:var(--red);border:1px solid rgba(178,58,72,.3)}
+.s-unverifiable{background:rgba(192,134,27,.14);color:var(--amber);border:1px solid rgba(192,134,27,.3)}
+.s-pending{background:rgba(155,142,134,.14);color:var(--gray);border:1px solid rgba(155,142,134,.3)}
+.score-circle{--c:var(--gold);--pct:0;width:196px;height:196px;border-radius:50%;display:grid;place-items:center;margin:0 auto;background:conic-gradient(var(--c) calc(var(--pct)*1%),var(--cream-2) 0);position:relative;transition:background .5s ease}
+.score-circle::before{content:'';position:absolute;inset:16px;border-radius:50%;background:var(--surface);box-shadow:inset 0 2px 12px rgba(88,17,39,.07)}
+.score-circle .inner{position:relative;text-align:center}
+.score-circle .num{font-family:var(--serif);font-size:48px;font-weight:700;line-height:1;color:var(--maroon-dark)}
+.score-circle .of{font-size:13px;color:var(--muted)}
+.score-circle .grade{font-family:var(--sans);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-dark);margin-top:6px}
+.qr{display:block;width:150px;height:150px;border-radius:14px;background:#fff;padding:9px;margin:14px auto 0;border:1px solid var(--line)}
+.token-box{font-family:ui-monospace,Menlo,monospace;background:var(--ivory);border:1px dashed var(--gold);border-radius:10px;padding:10px 12px;word-break:break-all;font-size:13px;color:var(--maroon-dark)}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.center{text-align:center}
+.small{font-size:13px}
+.quote{background:var(--ivory);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:14px;padding:22px 24px}
+.quote p{font-family:var(--serif);font-size:20px;font-style:italic;color:var(--maroon-dark);margin:0 0 10px}
+.quote .who{font-size:13px;font-weight:700;color:var(--muted)}
+.quote .qfoot{display:flex;align-items:center;gap:12px;margin-top:6px}
+.avatar{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-family:var(--serif);font-weight:700;color:#fff;background:linear-gradient(135deg,var(--maroon),var(--maroon-soft));font-size:19px;flex:none}
+.avatar.gold{background:linear-gradient(135deg,#D8B65E,var(--gold-dark));color:#3a2c08}
+.cta-band{background:linear-gradient(135deg,var(--maroon),var(--maroon-dark));border-radius:26px;padding:56px 28px;text-align:center;color:#fff}
+.cta-band .flourish::before{background:linear-gradient(90deg,transparent,var(--gold-soft))}
+.cta-band .flourish::after{background:linear-gradient(90deg,var(--gold-soft),transparent)}
+.cta-band h2{color:#fff;font-size:42px;margin-top:12px}
+.cta-band p{color:#f3e3d8;max-width:540px;margin:12px auto 24px}
+.footer{background:var(--maroon-dark);color:#f3e3d8;margin-top:54px}
+.footer-inner{max-width:1140px;margin:0 auto;padding:38px 24px;display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap}
+.footer .fbrand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:22px;color:#fff;margin-bottom:8px}
+.footer .fbrand svg{width:34px;height:34px}
+.foot-cols{display:flex;gap:50px;flex-wrap:wrap}
+.foot-cols .col h4{font-family:var(--sans);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-soft);margin:0 0 12px}
+.foot-cols .col a{display:block;color:#f3e3d8;opacity:.85;font-size:13.5px;margin-bottom:8px}
+.foot-cols .col a:hover{opacity:1}
+.foot-base{border-top:1px solid rgba(231,215,174,.2);text-align:center;padding:14px;font-size:12.5px;color:#f3e3d8;opacity:.8}
+.demo-banner{background:var(--maroon-dark);color:var(--gold-soft);text-align:center;font-size:12.5px;padding:7px 12px;letter-spacing:.03em}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.hero h1,.hero .lead,.hero-cta,.hero .trustbar{animation:fadeUp .8s ease both}
+.hero .lead{animation-delay:.08s}.hero-cta{animation-delay:.16s}.hero .trustbar{animation-delay:.24s}
+.hero-card{animation:fadeUp 1s ease .2s both}
+.progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--maroon));z-index:60;transition:width .1s linear}
+.totop{position:fixed;right:22px;bottom:22px;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--maroon),var(--maroon-dark));color:#fff;border:none;display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .25s,transform .25s;z-index:55}
+.totop.show{opacity:1;pointer-events:auto;transform:none}
+.totop svg{width:22px;height:22px}
+.sources{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.chip{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-weight:700;font-size:13.5px;color:var(--maroon-dark);box-shadow:var(--shadow-sm)}
+.chip svg{width:18px;height:18px}
+.calc{display:grid;grid-template-columns:.9fr 1.1fr;gap:34px;align-items:center}
+.calc-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:30px;box-shadow:var(--shadow-sm)}
+.ctog{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--ivory);border:1.6px solid var(--line);border-radius:12px;padding:11px 14px;font-weight:700;font-size:14px;color:var(--muted);cursor:pointer;margin-bottom:10px;transition:all .15s;font-family:var(--sans)}
+.ctog svg{width:22px;height:22px;flex:none;opacity:.45}
+.ctog .tk{margin-left:auto;width:20px;height:20px;opacity:0}
+.ctog.active{border-color:var(--gold);background:#fff;color:var(--maroon-dark)}
+.ctog.active svg{opacity:1}
+.ctog.active .tk{opacity:1}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;text-align:center}
+.stats .s b{font-family:var(--serif);font-size:46px;color:var(--maroon);display:block;line-height:1}
+.stats .s span{font-size:13px;color:var(--muted);font-weight:600}
+@media (max-width:880px){.hero-grid{grid-template-columns:1fr;gap:30px;padding:34px 0}.hero h1{font-size:42px}.sec-head h2{font-size:31px}.cta-band h2{font-size:32px}.gradebar{flex-wrap:wrap}.gradebar .seg{flex:1 1 33%}.cmp{font-size:13px}.cmp th,.cmp td{padding:11px 8px}.calc{grid-template-columns:1fr;gap:22px}.stats .s b{font-size:36px}}
+</style>
+</head>
+<body>
+<div class='progress' id='progress'></div>
+<div class='demo-banner'>Static UI preview, sample data, no backend needed. Use the top menu to explore the screens.</div>
+<header class='nav'><div class='nav-inner'>
+  <a class='brand' data-route='landing'><svg viewBox='0 0 48 48' fill='none'><path d='M24 6 26.4 10.5 24 15 21.6 10.5 24 6Z' fill='#C2A14D'/><circle cx='19' cy='27' r='11' stroke='#7C1F39' stroke-width='2.6'/><circle cx='29' cy='27' r='11' stroke='#C2A14D' stroke-width='2.6'/></svg> RishtaScore</a>
+  <nav class='nav-links'>
+    <a data-route='landing'>Home</a>
+    <a data-jump='how'>How it works</a>
+    <a data-jump='pricing'>Pricing</a>
+    <a data-jump='faq'>FAQ</a>
+    <a data-route='verify'>Verify a Match</a>
+    <a data-route='register' class='btn btn-sm'>Get started</a>
+  </nav>
+</div></header>
+<main id='app'></main>
+<button class='totop' id='totop' aria-label='Back to top'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 14 6-6 6 6'/></svg></button>
+<footer class='footer'>
+  <div class='footer-inner'>
+    <div style='max-width:300px'><div class='fbrand'><svg viewBox='0 0 48 48' fill='none'><path d='M24 6 26.4 10.5 24 15 21.6 10.5 24 6Z' fill='#E7D7AE'/><circle cx='19' cy='27' r='11' stroke='#E7D7AE' stroke-width='2.6'/><circle cx='29' cy='27' r='11' stroke='#C2A14D' stroke-width='2.6'/></svg> RishtaScore</div><div style='opacity:.85'>Find and verify your life partner with confidence. Consent first, revocable, and fully auditable.</div></div>
+    <div class='foot-cols'>
+      <div class='col'><h4>Product</h4><a data-jump='how'>How it works</a><a data-jump='checks'>The checks</a><a data-jump='pricing'>Pricing</a><a data-route='verify'>Verify a match</a></div>
+      <div class='col'><h4>Company</h4><a>About us</a><a>Careers</a><a>Contact</a></div>
+      <div class='col'><h4>Legal</h4><a>Privacy policy</a><a>Terms of use</a><a>Consent policy</a><a>Grievance</a></div>
+    </div>
+  </div>
+  <div class='foot-base'>Demo uses mock verification providers. Outputs marked [MOCK] are not real verifications. Copyright 2026 RishtaScore.</div>
+</footer>
+<script>
+const app=document.getElementById('app');
+const ICONS={
+ government_id:`<svg viewBox='0 0 24 24' fill='none' stroke='#7C1F39' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><rect x='2.5' y='5' width='19' height='14' rx='2.5'/><circle cx='8' cy='11' r='2.2'/><path d='M4.7 16.2c.4-1.7 1.8-2.5 3.3-2.5s2.9.8 3.3 2.5'/><path d='M13.6 10h5.4M13.6 13.2h5.4' stroke='#C2A14D'/></svg>`,
+ employment_income:`<svg viewBox='0 0 24 24' fill='none' stroke='#7C1F39' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='7.5' width='18' height='12' rx='2'/><path d='M8.5 7.5V6a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v1.5'/><path d='M3 12.6h18' stroke='#C2A14D'/><path d='M11 12v1.4h2V12' stroke='#C2A14D'/></svg>`,
+ education:`<svg viewBox='0 0 24 24' fill='none' stroke='#7C1F39' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M12 4 22 9 12 14 2 9 12 4Z'/><path d='M6 11v4.6c0 1.4 2.7 2.4 6 2.4s6-1 6-2.4V11' stroke='#C2A14D'/><path d='M22 9v5'/></svg>`,
+ marital_status:`<svg viewBox='0 0 24 24' fill='none' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'><circle cx='9.4' cy='14.6' r='4.7' stroke='#7C1F39'/><circle cx='15' cy='14.6' r='4.7' stroke='#C2A14D'/><path d='M9.4 4.4 11.3 7.7H7.5L9.4 4.4Z' fill='#C2A14D' stroke='#C2A14D' stroke-width='1'/></svg>`,
+ criminal_record:`<svg viewBox='0 0 24 24' fill='none' stroke='#7C1F39' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M12 3 5 5.5v5.2c0 4.4 3 7.7 7 9.3 4-1.6 7-4.9 7-9.3V5.5L12 3Z'/><path d='m8.8 11.7 2.1 2.1 4.3-4.4' stroke='#C2A14D'/></svg>`,
+ badge:`<svg viewBox='0 0 24 24' fill='none' stroke='#7C1F39' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='9' r='5.5'/><path d='m8.4 13.4-1.4 6.1 5-2.6 5 2.6-1.4-6.1' stroke='#C2A14D'/><path d='m12 6.4 .9 1.9 2 .2-1.5 1.4.4 2-1.8-1-1.8 1 .4-2L9.1 8.5l2-.2.9-1.9Z' fill='#C2A14D' stroke='none'/></svg>`,
+ verify:`<svg viewBox='0 0 24 24' fill='none' stroke='#7C1F39' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><circle cx='10.5' cy='10.5' r='6.5'/><path d='m20 20-4.6-4.6'/><path d='m7.9 10.5 2 2 3.4-3.6' stroke='#C2A14D'/></svg>`
+};
+const HEART=`<svg viewBox='0 0 24 24' fill='none' stroke='#E7D7AE' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'><path d='M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10Z'/></svg>`;
+const LOCK=`<svg viewBox='0 0 24 24' fill='none' stroke='#E7D7AE' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'><rect x='5' y='10.5' width='14' height='9' rx='2'/><path d='M8 10.5V8a4 4 0 0 1 8 0v2.5'/></svg>`;
+const SHARE=`<svg viewBox='0 0 24 24' fill='none' stroke='#E7D7AE' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'><circle cx='6' cy='12' r='2.5'/><circle cx='18' cy='6' r='2.5'/><circle cx='18' cy='18' r='2.5'/><path d='m8.2 10.8 7.6-3.6M8.2 13.2l7.6 3.6'/></svg>`;
+const RUPEE=`<svg viewBox='0 0 24 24' fill='none' stroke='#E7D7AE' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'><path d='M7 5h10M7 9h10M7 5c4.2 0 6.3 1.1 6.3 4S11.2 13 7 13l7.5 6'/></svg>`;
+const SHIELD=`<svg viewBox='0 0 24 24' fill='none' stroke='#7C1F39' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2.5 4 5.5v6c0 5 3.4 8.8 8 10.5 4.6-1.7 8-5.5 8-10.5v-6L12 2.5Z'/><path d='m8.5 12 2.3 2.3L15.5 9.5' stroke='#C2A14D'/></svg>`;
+const SEAL=`<svg viewBox='0 0 24 24' fill='none' stroke='#A6852F' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='10' r='6'/><path d='m9.5 10 1.7 1.7 3.3-3.4' stroke='#7C1F39'/><path d='M9 15.5 8 21l4-2 4 2-1-5.5'/></svg>`;
+const TICK=`<svg viewBox='0 0 24 24' fill='none' stroke='#2E7D5B' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><path d='m5 12.5 4.5 4.5L19 7'/></svg>`;
+const CROSS=`<svg viewBox='0 0 24 24' fill='none' stroke='#B23A48' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><path d='M7 7l10 10M17 7 7 17'/></svg>`;
+const TICKG=`<svg viewBox='0 0 24 24' fill='none' stroke='#A6852F' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><path d='m5 12.5 4.5 4.5L19 7'/></svg>`;
+const ORN=`<svg width='26' height='26' viewBox='0 0 26 26' fill='none'><path d='M13 2.5c2.6 3.2 2.6 7.3 0 10.5-2.6-3.2-2.6-7.3 0-10.5Z' fill='#C2A14D'/><path d='M13 23.5c2.6-3.2 2.6-7.3 0-10.5-2.6 3.2-2.6 7.3 0 10.5Z' fill='#C2A14D'/><circle cx='13' cy='13' r='2.1' fill='#7C1F39'/></svg>`;
+const ORN_LIGHT=`<svg width='26' height='26' viewBox='0 0 26 26' fill='none'><path d='M13 2.5c2.6 3.2 2.6 7.3 0 10.5-2.6-3.2-2.6-7.3 0-10.5Z' fill='#E7D7AE'/><path d='M13 23.5c2.6-3.2 2.6-7.3 0-10.5-2.6 3.2-2.6 7.3 0 10.5Z' fill='#E7D7AE'/><circle cx='13' cy='13' r='2.1' fill='#fff'/></svg>`;
+let _petals='';for(let a=0;a<360;a+=30){_petals+=`<ellipse cx='100' cy='52' rx='11' ry='36' transform='rotate(${a} 100 100)'/>`;}
+const MANDALA=`<svg viewBox='0 0 200 200' fill='none' stroke='#C2A14D' stroke-width='1.1'>${_petals}<circle cx='100' cy='100' r='18'/><circle cx='100' cy='100' r='27'/><circle cx='100' cy='100' r='90'/></svg>`;
+const CHECKS=[['government_id','Government ID'],['employment_income','Employment & Income'],['education','Education'],['marital_status','Marital Status'],['criminal_record','Criminal Record']];
+const GRADES=[['A+','750 to 900','var(--green)'],['A','650 to 749','var(--green)'],['B+','550 to 649','var(--gold-dark)'],['B','450 to 549','var(--gold-dark)'],['C','350 to 449','var(--amber)'],['D','0 to 349','var(--red)']];
+const PLANS=[
+ {name:`Essential`,price:`999`,pop:false,feats:[`One Trust Badge`,`All 5 verified checks`,`Score out of 900 with grade`,`Shareable link and QR code`,`Public verification page`,`Valid for 6 months`]},
+ {name:`Complete`,price:`1,999`,pop:true,feats:[`Everything in Essential`,`Valid for 12 months`,`Priority verification`,`Downloadable PDF report`,`25 match-verify credits`,`Dispute resolution support`]},
+ {name:`Together`,price:`2,999`,pop:false,feats:[`Two badges, for you and your partner`,`Everything in Complete`,`Family sharing controls`,`Unlimited match-verify`,`Dedicated concierge support`,`Priority customer care`]}
+];
+const CMP=[[`Cost`,`\u20b925,000 to 45,000`,`Free`,`\u20b9999 once`],[`Turnaround`,`2 to 4 weeks`,`Instant`,`Minutes`],[`Consent based`,false,false,true],[`Shareable badge`,false,false,true],[`Re-verifiable anytime`,false,false,true],[`Privacy controls`,false,false,true],[`Tamper-proof record`,false,false,true]];
+const FAQ=[
+ [`Is my data private and secure?`,`Yes. RishtaScore is built consent first. Every check runs only after you give clear, time stamped permission, your information is kept safe, and you decide exactly what is shared. You can take back your consent any time, and every view of your badge is saved for you to see.`],
+ [`Do you store my ID documents?`,`No. We never store raw identity numbers. After a check, only a masked reference (such as the last four digits) is retained, in line with privacy best practices.`],
+ [`What does each check verify?`,`There are five checks: Government ID, Employment and Income, Education, Marital Status, and Criminal Record. Each is scored out of 180. Only positively verified facts earn points, never self-declared claims.`],
+ [`How is the trust score calculated?`,`Your score ranges from 0 to 900, with up to 180 points per verified check. Unverifiable or mismatched results contribute zero, so the badge reflects what is genuinely confirmed.`],
+ [`Can I revoke my consent later?`,`Absolutely. Consent is purpose-bound and revocable any time from your dashboard. Once revoked, the related checks stop contributing and your badge updates accordingly.`],
+ [`Is the badge a guarantee about a person?`,`No. The badge reflects verified facts at a point in time and is a tool for informed decisions, not a guarantee. Marital status in particular is best effort and never absolute.`]
+];
+function esc(s){return String(s==null?'':s).replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));}
+const SAMPLE={token:'rs_7Qm3kP9xR2tLdW8sFhA1bN4c',subject_name:'Asha Rao',total_score:760,grade:'A+',max_score:900,is_active:true,
+  disclaimer:'Backed by consented sources for verified checks only. [MOCK] preview data. Marital status is best effort and never absolute.',
+  breakdown:[
+    {label:'Government ID',status:'verified',score:180,max_score:180},
+    {label:'Education',status:'verified',score:180,max_score:180},
+    {label:'Employment & Income',status:'verified',score:180,max_score:180},
+    {label:'Marital Status',status:'verified',score:153,max_score:180},
+    {label:'Criminal Record',status:'unverifiable',score:0,max_score:180}
+  ]};
+function gradeColorVar(g){return ({'A+':'var(--green)','A':'var(--green)','B+':'var(--gold-dark)','B':'var(--gold-dark)','C':'var(--amber)','D':'var(--red)'})[g]||'var(--gold-dark)';}
+function gradeForScore(s){return s>=750?'A+':s>=650?'A':s>=550?'B+':s>=450?'B':s>=350?'C':'D';}
+function scoreCircle(score,grade,max,animate){const pct=Math.round(score/max*100);const num=animate?`<div class='num' data-count='${score}'>0</div>`:`<div class='num'>${score}</div>`;return `<div class='score-circle' style='--pct:${pct};--c:${gradeColorVar(grade)}'><div class='inner'>${num}<div class='of'>of ${max}</div><div class='grade'>Grade ${esc(grade)}</div></div></div>`;}
+function fakeQR(){let cells='';for(let i=0;i<144;i++){const on=Math.random()>.45;cells+=`<rect x='${(i%12)*12}' y='${Math.floor(i/12)*12}' width='12' height='12' fill='${on?"#581127":"#fff"}'/>`;}
+  return `<svg class='qr' viewBox='0 0 144 144'>${cells}<rect x='0' y='0' width='36' height='36' fill='#fff'/><rect x='6' y='6' width='24' height='24' fill='#581127'/><rect x='12' y='12' width='12' height='12' fill='#fff'/></svg>`;}
+function cmpCell(v){return v===true?TICK:v===false?CROSS:`<span>${esc(v)}</span>`;}
+function easeOut(p){return 1-Math.pow(1-p,3);}
+function countUp(el){if(el.dataset.done)return;el.dataset.done='1';const target=parseFloat(el.getAttribute('data-count'));const suf=el.getAttribute('data-suffix')||'';const dur=1000;const t0=performance.now();function step(t){const p=Math.min(1,(t-t0)/dur);el.textContent=Math.round(target*easeOut(p))+suf;if(p<1)requestAnimationFrame(step);else el.textContent=target+suf;}requestAnimationFrame(step);}
+function wireCalc(){const wrap=document.getElementById('calcTogs');if(!wrap)return;const sel=new Set(CHECKS.map(c=>c[0]));function upd(){let sum=Math.min(900,sel.size*180);const g=gradeForScore(sum);document.getElementById('calcRing').innerHTML=scoreCircle(sum,g,900,false);}
+  wrap.querySelectorAll('.ctog').forEach(b=>b.addEventListener('click',()=>{const k=b.getAttribute('data-check');if(sel.has(k)){sel.delete(k);b.classList.remove('active');}else{sel.add(k);b.classList.add('active');}upd();}));upd();}
+function afterRender(){const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');if(e.target.hasAttribute('data-count'))countUp(e.target);io.unobserve(e.target);}})},{threshold:.18});
+  document.querySelectorAll('.reveal:not(.in),[data-count]').forEach(el=>io.observe(el));
+  wireCalc();}
+const routes={};
+function navigate(r){location.hash=r;}
+function setActive(r){document.querySelectorAll('.nav-links a[data-route]').forEach(a=>a.classList.toggle('active',a.getAttribute('data-route')===r));}
+function render(){const r=(location.hash.replace('#','')||'landing');(routes[r]||routes.landing)();setActive(r);window.scrollTo(0,0);afterRender();}
+window.addEventListener('hashchange',render);
+function jumpTo(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+document.addEventListener('click',e=>{
+  const j=e.target.closest('[data-jump]');
+  if(j){e.preventDefault();const id=j.getAttribute('data-jump');const cur=location.hash.replace('#','');if(cur&&cur!=='landing'){navigate('landing');setTimeout(()=>jumpTo(id),80);}else{jumpTo(id);}return;}
+  const l=e.target.closest('[data-route]');
+  if(l){e.preventDefault();navigate(l.getAttribute('data-route'));}
+});
+const _bar=document.getElementById('progress'),_top=document.getElementById('totop');
+window.addEventListener('scroll',()=>{const h=document.documentElement;const denom=(h.scrollHeight-h.clientHeight)||1;_bar.style.width=(h.scrollTop/denom*100)+'%';_top.classList.toggle('show',h.scrollTop>520);});
+_top.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+routes.landing=()=>{app.innerHTML=`
+  <section class='hero'>
+    <div class='mandala m1'>${MANDALA}</div>
+    <div class='mandala m2'>${MANDALA}</div>
+    <div class='wrap'><div class='hero-grid'>
+      <div>
+        <div class='eyebrow'>Verified profiles for marriage</div>
+        <h1>Find your life partner, with <span class='accent'>proof</span>, not just promises.</h1>
+        <p class='lead'>Marriage is a lifetime decision, yet most families still trust claims that no one has checked. RishtaScore lets you and a possible partner agree to background checks, then share one trusted badge. More confidence, far less doubt.</p>
+        <div class='hero-cta'>
+          <button class='btn' data-route='register'>Build my Trust Badge</button>
+          <button class='btn btn-ghost' data-route='verify'>Verify a match</button>
+        </div>
+        <div class='trustbar'>
+          <div class='t'><b>&#8377;999</b><span>vs &#8377;25,000 to &#8377;45,000 detective</span></div>
+          <div class='t'><b>0 to 900</b><span>Trust score range</span></div>
+          <div class='t'><b>100%</b><span>Consent based</span></div>
+          <div class='t'><b>5</b><span>Verified checks</span></div>
+        </div>
+      </div>
+      <div class='hero-art'>
+        <div class='hero-card'>
+          <div class='pills' style='justify-content:center;margin-bottom:18px'><span class='pill'>Revocable</span><span class='pill'>Auditable</span><span class='pill'>Private</span></div>
+          ${scoreCircle(760,'A+',900,true)}
+          <p class='serif' style='font-size:24px;color:var(--maroon-dark);margin:18px 0 2px'>Asha Rao</p>
+          <p class='small muted' style='margin:0'>Sample Trust Badge, 4 of 5 checks verified</p>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class='valuestrip'><div class='wrap'><div class='vrow'>
+    <div class='vitem'><div class='vic'>${HEART}</div><div><b>Made for marriage</b><span>Built for Indian families</span></div></div>
+    <div class='vitem'><div class='vic'>${LOCK}</div><div><b>Bank-grade security</b><span>Encrypted and consent-first</span></div></div>
+    <div class='vitem'><div class='vic'>${SHARE}</div><div><b>Portable badge</b><span>One link, share anywhere</span></div></div>
+    <div class='vitem'><div class='vic'>${RUPEE}</div><div><b>From just &#8377;999</b><span>A fraction of a detective</span></div></div>
+  </div></div></section>
+
+  <section class='block' style='padding:30px 0'><div class='wrap'>
+    <p class='center eyebrow reveal' style='margin-bottom:16px'>Powered by consented, trusted sources</p>
+    <div class='sources reveal'>
+      <span class='chip'>${SEAL} DigiLocker</span>
+      <span class='chip'>${SEAL} EPFO</span>
+      <span class='chip'>${SEAL} NAD</span>
+      <span class='chip'>${SEAL} eCourts</span>
+      <span class='chip'>${SEAL} State Police</span>
+    </div>
+  </div></section>
+
+  <section class='block' id='how' style='background:var(--ivory);border-top:1px solid var(--line);border-bottom:1px solid var(--line)'><div class='wrap'>
+    <div class='sec-head reveal'><div class='flourish'>${ORN}</div><span class='eyebrow'>Simple and respectful</span><h2>How it works</h2><p>You stay in control at every step. Nothing is checked, scored, or shared without your explicit consent.</p></div>
+    <div class='grid grid-3'>
+      <div class='card reveal'><div class='stepnum'>1</div><h3>Grant your consent</h3><p class='muted'>Choose exactly which checks to run. Every consent is explicit, timestamped, and revocable at any time.</p></div>
+      <div class='card reveal'><div class='stepnum'>2</div><h3>Get verified</h3><p class='muted'>Only authorised checks run, and only positively verified facts earn points. Never self declared claims.</p></div>
+      <div class='card reveal'><div class='stepnum'>3</div><h3>Share your badge</h3><p class='muted'>Receive a portable link and QR code. A prospective partner and their family verify it instantly, and every view is logged for you.</p></div>
+    </div>
+  </div></section>
+
+  <section class='block' id='checks'><div class='wrap'>
+    <div class='sec-head reveal'><div class='flourish'>${ORN}</div><span class='eyebrow'>What we verify</span><h2>Five checks that matter</h2><p>Each check is scored out of 180, backed by consented government and partner sources as integrations roll out.</p></div>
+    <div class='grid grid-3'>${CHECKS.map(c=>`<div class='card check-card reveal'><div class='check-ic'>${ICONS[c[0]]}</div><h3 style='font-size:24px'>${esc(c[1])}</h3><p class='muted small'>Verified facts earn up to 180 points. Unverifiable or mismatched data contributes zero.</p></div>`).join('')}</div>
+  </div></section>
+
+  <section class='block' id='scoring' style='background:var(--ivory);border-top:1px solid var(--line);border-bottom:1px solid var(--line)'><div class='wrap'>
+    <div class='sec-head reveal'><div class='flourish'>${ORN}</div><span class='eyebrow'>How scoring works</span><h2>One clear score, from 0 to 900</h2><p>Five checks, up to 180 points each. Your grade makes the result easy to understand at a glance.</p></div>
+    <div class='gradebar reveal'>${GRADES.map(g=>`<div class='seg' style='background:${g[2]}'><b>${g[0]}</b><span>${g[1]}</span></div>`).join('')}</div>
+    <div class='calc reveal' style='margin-top:38px'>
+      <div class='center'><div id='calcRing'></div></div>
+      <div class='calc-card'>
+        <span class='eyebrow'>Interactive</span>
+        <h3 style='font-size:26px;margin:6px 0 4px'>See the score move</h3>
+        <p class='muted small' style='margin:0 0 16px'>Toggle the checks a profile has verified and watch the trust score and grade update live.</p>
+        <div id='calcTogs'>${CHECKS.map(c=>`<button class='ctog active' data-check='${c[0]}'>${ICONS[c[0]]}<span>${esc(c[1])}</span><span class='tk'>${TICKG}</span></button>`).join('')}</div>
+      </div>
+    </div>
+  </div></section>
+
+  <section class='block'><div class='wrap'>
+    <div class='sec-head reveal'><div class='flourish'>${ORN}</div><span class='eyebrow'>Why RishtaScore</span><h2>A better way than the old ways</h2><p>The old options are slow, costly, or simply not checked. RishtaScore is fast, low cost, and runs only with your consent.</p></div>
+    <table class='cmp reveal'><thead><tr><th></th><th>Private detective</th><th>Self-declared</th><th class='vt'>RishtaScore</th></tr></thead><tbody>
+      ${CMP.map(r=>`<tr><td>${esc(r[0])}</td><td>${cmpCell(r[1])}</td><td>${cmpCell(r[2])}</td><td class='vt'>${cmpCell(r[3])}</td></tr>`).join('')}
+    </tbody></table>
+  </div></section>
+
+  <section class='block' style='background:var(--ivory);border-top:1px solid var(--line);border-bottom:1px solid var(--line)'><div class='wrap'>
+    <div class='sec-head reveal'><div class='flourish'>${ORN}</div><span class='eyebrow'>Two ways to use it</span><h2>For you, and for your match</h2></div>
+    <div class='grid grid-2'>
+      <div class='card reveal'><div class='use-ic'>${ICONS.badge}</div><h3 style='font-size:24px'>Showcase your own trust</h3><p class='muted'>Build a Trust Badge for your own profile and share it with prospective matches and their families, so the right people take you seriously from the start.</p><button class='btn btn-sm' style='margin-top:8px' data-route='register'>Build my badge</button></div>
+      <div class='card reveal'><div class='use-ic'>${ICONS.verify}</div><h3 style='font-size:24px'>Verify a prospective partner</h3><p class='muted'>Received a badge from a potential life partner? Confirm their verified facts in seconds, with their consent, before two families say yes.</p><button class='btn btn-sm btn-ghost' style='margin-top:8px' data-route='verify'>Verify a match</button></div>
+    </div>
+  </div></section>
+
+  <section class='block' id='pricing'><div class='wrap'>
+    <div class='sec-head reveal'><div class='flourish'>${ORN}</div><span class='eyebrow'>Simple pricing</span><h2>Pay once, share with confidence</h2><p>No subscriptions, no surprises. One-time plans designed for every stage of your search.</p></div>
+    <div class='price-grid'>${PLANS.map(p=>`<div class='price-card reveal ${p.pop?'pop':''}'>${p.pop?`<div class='ribbon'>Most loved</div>`:''}<h3>${esc(p.name)}</h3><div class='price-amt'>&#8377;${esc(p.price)}<small> once</small></div><p class='price-note'>One-time payment, no auto-renewal</p><ul>${p.feats.map(f=>`<li>${TICKG}<span>${esc(f)}</span></li>`).join('')}</ul><button class='btn ${p.pop?'':'btn-ghost'}' data-route='register'>Get started</button></div>`).join('')}</div>
+    <p class='center muted small' style='margin-top:16px'>All plans include consent controls, revocation, and audit logs. Prices shown are illustrative for this preview.</p>
+  </div></section>
+
+  <section class='block' style='background:var(--ivory);border-top:1px solid var(--line);border-bottom:1px solid var(--line)'><div class='wrap'>
+    <div class='trust-strip reveal'>
+      <div class='ic'>${SHIELD}</div>
+      <div class='tx'><h3 style='font-size:26px'>Privacy by design</h3><p class='muted' style='margin:6px 0 0'>Your consent comes first, always. Information is encrypted, raw ID numbers are never stored, every badge view is logged, and you can revoke access at any moment. Built to respect Indian data protection principles.</p></div>
+      <button class='btn btn-sm' data-route='register' style='flex:none'>Get started</button>
+    </div>
+  </div></section>
+
+  <section class='block'><div class='wrap'>
+    <div class='stats'>
+      <div class='s reveal'><b data-count='3'>0</b><span>Simple steps to your badge</span></div>
+      <div class='s reveal'><b data-count='180'>0</b><span>Points per verified check</span></div>
+      <div class='s reveal'><b data-count='12'>0</b><span>Months of badge validity</span></div>
+      <div class='s reveal'><b data-count='0'>0</b><span>Raw ID numbers stored</span></div>
+    </div>
+  </div></section>
+
+  <section class='block' style='background:var(--ivory);border-top:1px solid var(--line);border-bottom:1px solid var(--line)'><div class='wrap'>
+    <div class='sec-head reveal'><div class='flourish'>${ORN}</div><span class='eyebrow'>Trusted by families</span><h2>Peace of mind, the modern way</h2></div>
+    <div class='grid grid-3'>
+      <div class='quote reveal'><p>We could finally move forward with confidence. The badge answered the questions no one likes to ask out loud.</p><div class='qfoot'><span class='avatar'>M</span><div class='who'>Meera and family, Pune</div></div></div>
+      <div class='quote reveal'><p>I controlled exactly what was shared with the other family. It felt respectful, never invasive.</p><div class='qfoot'><span class='avatar gold'>R</span><div class='who'>Rohan, Bengaluru</div></div></div>
+      <div class='quote reveal'><p>The verification was quick and the badge made introductions far easier for both families.</p><div class='qfoot'><span class='avatar'>S</span><div class='who'>Sneha and family, Jaipur</div></div></div>
+    </div>
+  </div></section>
+
+  <section class='block' id='faq'><div class='wrap' style='max-width:820px'>
+    <div class='sec-head reveal'><div class='flourish'>${ORN}</div><span class='eyebrow'>Good to know</span><h2>Frequently asked questions</h2></div>
+    <div class='faq reveal'>${FAQ.map((q,i)=>`<details ${i===0?'open':''}><summary>${esc(q[0])}</summary><p>${esc(q[1])}</p></details>`).join('')}</div>
+  </div></section>`;};
+
+routes.register=()=>{app.innerHTML=`<div class='wrap' style='padding-top:40px;padding-bottom:30px'>
+  <div class='center reveal' style='margin:6px 0 24px'><div class='flourish'>${ORN}</div><span class='eyebrow'>Welcome</span><h2 style='font-size:36px;margin-top:8px'>Create your account</h2></div>
+  <div class='card card-cream reveal' style='max-width:460px;margin:0 auto'>
+    <label>Full name</label><input placeholder='Your name' value='Asha Rao'/>
+    <label>Email</label><input type='email' placeholder='you@example.com'/>
+    <label>Phone</label><input placeholder='Optional'/>
+    <label>Password</label><input type='password' value='placeholder'/>
+    <button class='btn' style='margin-top:18px;width:100%' data-route='dashboard'>Create account</button>
+    <p class='small muted center' style='margin-top:14px'>Already registered? <a data-route='dashboard'>Log in</a></p>
+  </div>
+</div>`;};
+
+routes.dashboard=()=>{app.innerHTML=`<div class='wrap' style='padding-top:34px;padding-bottom:30px'>
+  <div class='steps'><div class='step active'><b>Step 1</b> Grant consent</div><div class='step'><b>Step 2</b> Get verified</div><div class='step'><b>Step 3</b> Your badge</div></div>
+  <div class='card reveal'>
+    <h2 style='font-size:30px'>Grant your consent</h2>
+    <p class='muted' style='margin-top:4px'>Select the checks you authorise. Nothing runs without your explicit permission.</p>
+    <div class='checks' style='margin-top:16px'>${CHECKS.map(c=>`<label class='check-opt'><input type='checkbox' ${c[0]!=='criminal_record'?'checked':''}> ${ICONS[c[0]]} <span>${esc(c[1])}</span></label>`).join('')}</div>
+    <label class='agree'><input type='checkbox' checked> <span>I explicitly and voluntarily consent to the selected background checks for the purpose of generating a marriage trust badge. I understand this is purpose bound and revocable at any time.</span></label>
+    <button class='btn' style='margin-top:18px' data-route='badge'>Run verification</button>
+  </div>
+  <h2 style='font-size:25px;margin:36px 0 14px'>Your consent records</h2>
+  <div class='card reveal'><table class='data'><thead><tr><th>Checks</th><th>Granted</th><th>Status</th><th></th></tr></thead><tbody>
+    <tr><td>Govt ID, Education, Employment, Marital</td><td class='small'>12 Jun 2026, 8:40 PM</td><td><span class='badge-status s-verified'>active</span></td><td><button class='btn btn-sm btn-danger'>Revoke</button></td></tr>
+    <tr><td>Education</td><td class='small'>02 May 2026, 11:05 AM</td><td><span class='badge-status s-mismatch'>revoked</span></td><td></td></tr>
+  </tbody></table></div>
+  <h2 style='font-size:25px;margin:36px 0 14px'>Your badges</h2>
+  <div class='card reveal'><table class='data'><thead><tr><th>Issued</th><th>Score</th><th>Grade</th><th>Token</th><th></th></tr></thead><tbody>
+    <tr><td class='small'>12 Jun 2026, 8:41 PM</td><td><b>760</b></td><td>A+</td><td class='small'>rs_7Qm3kP9xR2...</td><td><button class='btn btn-sm btn-gold' data-route='badge'>View</button></td></tr>
+  </tbody></table></div>
+</div>`;};
+
+routes.badge=()=>{const b=SAMPLE;app.innerHTML=`<div class='wrap' style='padding-top:34px;padding-bottom:30px'>
+  <div class='steps'><div class='step'><b>Step 1</b> Grant consent</div><div class='step'><b>Step 2</b> Get verified</div><div class='step active'><b>Step 3</b> Your badge</div></div>
+  <div class='card reveal'>
+    <div class='center' style='margin-bottom:10px'><div class='flourish'>${ORN}</div><span class='eyebrow'>Verified Trust Badge</span></div>
+    <div class='grid grid-2' style='align-items:center'>
+      <div class='center'>${scoreCircle(b.total_score,b.grade,b.max_score,true)}
+        <p class='serif' style='font-size:25px;color:var(--maroon-dark);margin:14px 0 2px'>${esc(b.subject_name)}</p>
+        ${fakeQR()}<p class='small muted' style='margin:8px 0 4px'>Shareable token</p><div class='token-box'>${esc(b.token)}</div>
+        <div class='row' style='margin-top:12px;justify-content:center'><button class='btn btn-sm' data-route='verify'>Open public badge</button></div></div>
+      <div><h3 style='font-size:23px;margin-bottom:6px'>Verification breakdown</h3><table class='data'><thead><tr><th>Check</th><th>Status</th><th>Score</th></tr></thead><tbody>
+        ${b.breakdown.map(x=>`<tr><td>${esc(x.label)}</td><td><span class='badge-status s-${x.status}'>${esc(x.status)}</span></td><td><b>${x.score}</b><span class='muted'>/${x.max_score}</span></td></tr>`).join('')}
+      </tbody></table><p class='small muted' style='margin-top:12px'>Only verified facts earn points. Unverifiable and mismatched data contribute zero, by design.</p></div>
+    </div></div>
+</div>`;};
+
+routes.verify=()=>{const b=SAMPLE;app.innerHTML=`<div class='wrap' style='padding-top:34px;padding-bottom:30px'>
+  <div class='center reveal' style='margin:6px 0 20px'><div class='flourish'>${ORN}</div><span class='eyebrow'>Public verification</span><h2 style='font-size:34px;margin-top:8px'>Verify a prospective match</h2><p class='muted'>Enter a badge token to view its current, consented status. Every view is logged.</p></div>
+  <div class='card card-cream reveal' style='max-width:580px;margin:0 auto'>
+    <div class='row'><input id='tok' value='${esc(b.token)}' style='flex:1'/><button class='btn' id='go'>Verify</button></div>
+  </div>
+  <div id='out' style='margin-top:22px'></div>
+</div>`;
+  const out=()=>{document.getElementById('out').innerHTML=`<div class='card'><div class='grid grid-2' style='align-items:center'>
+    <div class='center'>${scoreCircle(b.total_score,b.grade,b.max_score,false)}${fakeQR()}<p class='serif' style='font-size:23px;color:var(--maroon-dark);margin:12px 0 4px'>${esc(b.subject_name)}</p><span class='badge-status s-verified'>Active badge</span></div>
+    <div><h3 style='font-size:23px;margin-bottom:6px'>Current status</h3><table class='data'><thead><tr><th>Check</th><th>Status</th></tr></thead><tbody>
+      ${b.breakdown.map(x=>`<tr><td>${esc(x.label)}</td><td><span class='badge-status s-${x.status}'>${esc(x.status)}</span></td></tr>`).join('')}
+    </tbody></table></div></div><p class='small muted' style='margin-top:16px;border-top:1px solid var(--line);padding-top:14px'>${esc(b.disclaimer)}</p></div>`;};
+  document.getElementById('go').addEventListener('click',out);out();};
+
+if(!location.hash)navigate('landing');render();
+</script>
+</body>
+</html>
